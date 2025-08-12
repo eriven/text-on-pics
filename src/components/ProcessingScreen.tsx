@@ -1,8 +1,7 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { Wand2 } from 'lucide-react';
-import Image from 'next/image';
 import { removeBackground } from '@imgly/background-removal';
 
 interface ProcessingScreenProps {
@@ -20,12 +19,15 @@ export default function ProcessingScreen({
   const [stage, setStage] = useState('Initializing...');
   const [isFirstTime, setIsFirstTime] = useState(true);
 
-  const processImage = useCallback(async () => {
+  useEffect(() => {
+    processImage();
+  }, [selectedFile]);
+
+  const processImage = async () => {
     try {
       // Check if this is likely the first time (no cached models)
       const hasCache = localStorage.getItem('bgremoval_models_cached');
-      const firstTime = !hasCache;
-      setIsFirstTime(firstTime);
+      setIsFirstTime(!hasCache);
 
       // Create image URL for preview
       const originalImageUrl = URL.createObjectURL(selectedFile);
@@ -44,7 +46,7 @@ export default function ProcessingScreen({
         setStage(text);
         setProgress(progress);
         // Optimized delays for better UX
-        const delay = firstTime ? 500 : 100; // 0.5s first time, 0.1s subsequent
+        const delay = isFirstTime ? 500 : 100; // 0.5s first time, 0.1s subsequent
         await new Promise(resolve => setTimeout(resolve, delay));
       }
 
@@ -69,13 +71,7 @@ export default function ProcessingScreen({
       console.error('Processing error:', error);
       onError(error instanceof Error ? error.message : 'Failed to process image');
     }
-  }, [onProcessingComplete, onError, selectedFile]);
-
-  useEffect(() => {
-    if (selectedFile) {
-      processImage();
-    }
-  }, [processImage, selectedFile]);
+  };
 
   const estimatedTime = isFirstTime ? '~30 seconds' : '~5 seconds';
 
@@ -85,7 +81,7 @@ export default function ProcessingScreen({
       <header className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg flex items-center justify-center overflow-hidden">
-            <Image src="/assets/logos/logo.png" alt="Logo" width={32} height={32} className="w-full h-full object-cover" />
+            <img src="/assets/logos/logo.png" alt="Logo" className="w-full h-full object-cover" />
           </div>
           <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
             Text Behind Image
@@ -134,7 +130,7 @@ export default function ProcessingScreen({
               </div>
               <div className="text-left">
                 <p className="text-sm text-orange-800 dark:text-orange-200 leading-relaxed">
-                  Hang tight — It’s a one-time load delay due<br />
+                  Hang tight — It&apos;s a one-time load delay due<br />
                   to browser caching. Future loads will be<br />
                   instant.
                 </p>

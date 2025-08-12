@@ -3,7 +3,6 @@
 import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Upload, User } from 'lucide-react';
-import Image from 'next/image';
 import ProcessingScreen from '@/components/ProcessingScreen';
 import EditorScreen from '@/components/EditorScreen';
 
@@ -68,7 +67,7 @@ export default function AppHome() {
       <header className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg flex items-center justify-center overflow-hidden">
-            <Image src="/assets/logos/logo.png" alt="Logo" width={32} height={32} className="w-full h-full object-cover" />
+            <img src="/assets/logos/logo.png" alt="Logo" className="w-full h-full object-cover" />
           </div>
           <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
             Text Behind Image
