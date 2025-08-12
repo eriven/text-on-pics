@@ -14,6 +14,7 @@ import {
   X
 } from 'lucide-react';
 import TextEditingToolbar from './TextEditingToolbar';
+import Image from 'next/image';
 
 interface EditorScreenProps {
   originalImage: string;
@@ -170,7 +171,7 @@ export default function EditorScreen({ originalImage, processedImage }: EditorSc
     
     // Draw processed image (foreground with transparency) on top
     ctx.drawImage(processedImg, 0, 0, canvas.width, canvas.height);
-  }, [textElements, backgroundImages, backgroundImageCache, canvasSize, selectedTextId, selectedBackgroundId]);
+  }, [textElements, backgroundImages, renderBackgroundImage, renderTextElement]);
 
   // Helper function to render multiline text
   const renderMultilineText = (
@@ -196,7 +197,7 @@ export default function EditorScreen({ originalImage, processedImage }: EditorSc
   };
 
   // Render individual text element
-  const renderTextElement = (ctx: CanvasRenderingContext2D, textElement: TextElement) => {
+  const renderTextElement = useCallback((ctx: CanvasRenderingContext2D, textElement: TextElement) => {
     ctx.save();
     
     // Set text properties
@@ -253,7 +254,7 @@ export default function EditorScreen({ originalImage, processedImage }: EditorSc
     }
     
     ctx.restore();
-  };
+  }, [selectedTextId]);
 
   // Export-specific text element renderer (no selection indicators, optimized quality)
   const renderTextElementForExport = (ctx: CanvasRenderingContext2D, textElement: TextElement) => {
@@ -289,7 +290,7 @@ export default function EditorScreen({ originalImage, processedImage }: EditorSc
   };
 
   // Render individual background image
-  const renderBackgroundImage = (ctx: CanvasRenderingContext2D, backgroundImage: BackgroundImage) => {
+  const renderBackgroundImage = useCallback((ctx: CanvasRenderingContext2D, backgroundImage: BackgroundImage) => {
     ctx.save();
     
     // Get the cached image
@@ -332,7 +333,7 @@ export default function EditorScreen({ originalImage, processedImage }: EditorSc
     }
     
     ctx.restore();
-  };
+  }, [backgroundImageCache, selectedBackgroundId]);
 
   // Export-specific background image renderer (no selection indicators, optimized quality)
   const renderBackgroundImageForExport = (ctx: CanvasRenderingContext2D, backgroundImage: BackgroundImage) => {
@@ -872,7 +873,7 @@ export default function EditorScreen({ originalImage, processedImage }: EditorSc
       <header className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg flex items-center justify-center overflow-hidden">
-            <img src="/assets/logos/logo.png" alt="Logo" className="w-full h-full object-cover" />
+            <Image src="/assets/logos/logo.png" alt="Logo" width={32} height={32} className="w-full h-full object-cover" />
           </div>
           <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
             Text Behind Image
@@ -1190,7 +1191,9 @@ export default function EditorScreen({ originalImage, processedImage }: EditorSc
       />
 
       {/* Hidden image elements for canvas rendering */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img ref={originalImageRef} className="hidden" alt="Original" />
+      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img ref={processedImageRef} className="hidden" alt="Processed" />
     </div>
   );
