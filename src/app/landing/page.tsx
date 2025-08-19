@@ -53,6 +53,9 @@ export default function LandingPage() {
             />
             <span className="text-sm font-medium text-white/80">Text Behind Image</span>
           </Link>
+          <div className="hidden md:block text-center text-white font-bold text-xs sm:text-sm">
+            we are launching on heaven.xyz soon
+          </div>
           <Link
             href="/app"
             className="rounded-md bg-white px-4 py-2 text-sm font-medium text-black transition hover:bg-white/90"
@@ -424,7 +427,7 @@ export default function LandingPage() {
             <span>Text Behind Image</span>
           </div>
           <div className="flex items-center gap-6">
-            <Link href="/">Editor</Link>
+            <Link href="https://x.com/textbehindpics" target="_blank" rel="noopener noreferrer">Twitter</Link>
             <Link href="/landing">Home</Link>
           </div>
         </div>
